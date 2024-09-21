@@ -1,6 +1,4 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-import httpStatus from 'http-status';
-import AppError from '../../errors/AppError';
 import { User } from './user.model';
 
 const getProfilefromDB = async (payload: any) => {
@@ -13,29 +11,21 @@ const getProfilefromDB = async (payload: any) => {
   return result;
 }
 
-const updateProfilefromDB = async (payload: any) => {
-  // Find the user based on email and phone
-  const updateData = await User.findOne({
-    email: payload?.email,
-    phone: payload?.phone,
-  });
 
-  if (!updateData) {
-    throw new AppError(httpStatus.NOT_FOUND, "Dont get user for update !")
-  }
-
-  const id = updateData?._id;
-
+const updateProfilefromDB = async (id: string, payload: any) => {
   const updateFields = {
     name: payload?.name,
-    phone: payload?.phone
+    phone: payload?.phone,
   };
 
-  const result = await User.findByIdAndUpdate(
-    id,
-    updateFields,
-    { new: true, runValidators: true }
-  ).select('-password');
+  const result = await User.findByIdAndUpdate(id, updateFields, {
+    new: true,
+    runValidators: true,
+  }).select('-password');
+
+  if (!result) {
+    throw new Error('User not found');
+  }
 
   return result;
 };

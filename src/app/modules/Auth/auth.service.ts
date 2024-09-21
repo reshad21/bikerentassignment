@@ -13,8 +13,6 @@ const createUserIntoDB = async (payload: TUser) => {
 };
 
 const loginUser = async (payload: TLoginUser) => {
-    // console.log(payload);
-    // { email: 'john1@example.com', password: '1234' }
 
     //checking if the user is exists
     const user = await User.isUserExistsByCustomEmail(payload?.email);
@@ -32,16 +30,13 @@ const loginUser = async (payload: TLoginUser) => {
     }
 
     //create access token for authorization
-    // const tokenData = { ...user };
-    // const tokenData = user;
-    // const tokenData = { user };
     const tokenData = { email: user?.email, role: user?.role, phone: user?.phone, name: user?.name };
 
-    const accessToken = jwt.sign(tokenData, config.jwt_access_secret as string, { expiresIn: '10d' });
+    const token = jwt.sign(tokenData, config.jwt_access_secret as string, { expiresIn: '10d' });
 
     return {
-        accessToken,
-        user
+        token,
+        data: user,
     };
 }
 

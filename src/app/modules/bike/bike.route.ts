@@ -19,7 +19,7 @@ router.get(
     BikeControllers.getAllBike
 );
 
-router.patch(
+router.put(
     '/:bikeId',
     auth(USER_ROLE.admin),
     validateRequest(BikeValidation.updateBikeValidationSchema),

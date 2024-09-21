@@ -8,7 +8,7 @@ import { RentValidation } from './rent.validation';
 const router = express.Router();
 
 router.post(
-    '',
+    '/',
     auth(USER_ROLE.admin, USER_ROLE.user),
     validateRequest(RentValidation.rentValidationSchema),
     RentControllers.createRent,

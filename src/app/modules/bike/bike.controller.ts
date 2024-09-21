@@ -9,7 +9,7 @@ const createBike = catchAsync(async (req, res) => {
     sendResponse(res, {
         statusCode: httpStatus.OK,
         success: true,
-        message: 'Bike is created succesfully',
+        message: 'Bike added succesfully',
         data: result,
     });
 });
