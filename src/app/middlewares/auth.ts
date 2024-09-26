@@ -1,4 +1,3 @@
-
 import { NextFunction, Request, Response } from "express";
 import httpStatus from "http-status";
 import jwt, { JwtPayload } from 'jsonwebtoken';
@@ -10,25 +9,28 @@ import catchAsync from "../utils/catchAsync";
 const auth = (...requiredRoles: TUserRole[]) => {
     return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
-        const token = req.headers.authorization;
+        // Extract Bearer token
+        const authHeader = req.headers.authorization;
+        const token = authHeader && authHeader.split(' ')[1];
 
         if (!token) {
-            throw new AppError(httpStatus.UNAUTHORIZED, "Dont give any token !");
+            throw new AppError(httpStatus.UNAUTHORIZED, "No token provided!");
         }
 
-        //check the token is valid
-        jwt.verify(token, config.jwt_access_secret as string, function (err, decoded) {
-            // err
+        // Verify token
+        jwt.verify(token, config.jwt_access_secret as string, (err, decoded) => {
             if (err) {
-                throw new AppError(httpStatus.UNAUTHORIZED, "You provided wrong token !");
+                throw new AppError(httpStatus.UNAUTHORIZED, "Invalid token!");
             }
 
+            // Extract role from decoded token
             const role = (decoded as JwtPayload).role;
 
-            if (requiredRoles && !requiredRoles.includes(role)) {
-                throw new AppError(httpStatus.UNAUTHORIZED, "Dont get user role from decoded token !");
+            if (requiredRoles.length && !requiredRoles.includes(role)) {
+                throw new AppError(httpStatus.FORBIDDEN, "Insufficient permissions!");
             }
 
+            // Attach decoded token to request object
             req.user = decoded as JwtPayload;
             next();
         });

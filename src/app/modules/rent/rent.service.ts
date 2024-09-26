@@ -85,7 +85,7 @@ const getMyRentsBike = async (payload: any) => {
     });
 
     if (!getUserAllinfo) {
-        throw new AppError(httpStatus.NOT_FOUND, "Dont get user for bookking bike !")
+        throw new AppError(httpStatus.NOT_FOUND, "Dont get user for booking bike !")
     }
 
     const userId = getUserAllinfo?._id;

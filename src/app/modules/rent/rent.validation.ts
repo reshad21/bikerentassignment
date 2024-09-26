@@ -2,7 +2,7 @@ import { z } from 'zod';
 
 const rentValidationSchema = z.object({
     body: z.object({
-        userId: z.string().min(1, "User ID is required").optional(),
+        // userId: z.string().min(1, "User ID is required").optional(),
         bikeId: z.string().min(1, "Bike ID is required"),
         startTime: z.string().refine((val) => !isNaN(Date.parse(val)), {
             message: "Invalid startTime",
