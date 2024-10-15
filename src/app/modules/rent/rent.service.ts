@@ -13,9 +13,9 @@ const createBookingIntoDB = async (payload: any, userInfo: any) => {
         phone: userInfo?.phone,
     });
 
-    if (!getUserAllinfo) {
-        throw new AppError(httpStatus.NOT_FOUND, "Dont get user for bookking bike !")
-    }
+    // if (!getUserAllinfo) {
+    //     throw new AppError(httpStatus.NOT_FOUND, "Dont get user for bookking bike !")
+    // }
 
     const userid = getUserAllinfo?._id;
 
@@ -84,9 +84,9 @@ const getMyRentsBike = async (payload: any) => {
         phone: payload?.phone,
     });
 
-    if (!getUserAllinfo) {
-        throw new AppError(httpStatus.NOT_FOUND, "Dont get user for booking bike !")
-    }
+    // if (!getUserAllinfo) {
+    //     throw new AppError(httpStatus.NOT_FOUND, "Dont get user for booking bike !")
+    // }
 
     const userId = getUserAllinfo?._id;
 
