@@ -9,32 +9,31 @@ import catchAsync from "../utils/catchAsync";
 const auth = (...requiredRoles: TUserRole[]) => {
     return catchAsync(async (req: Request, res: Response, next: NextFunction) => {
 
-        // Extract Bearer token
         const authHeader = req.headers.authorization;
-        const token = authHeader && authHeader.split(' ')[1];
 
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            throw new AppError(httpStatus.UNAUTHORIZED, "Authorization header is missing or improperly formatted!");
+        }
+
+        const token = authHeader.split(' ')[1];
         if (!token) {
             throw new AppError(httpStatus.UNAUTHORIZED, "No token provided!");
         }
 
-        // Verify token
-        jwt.verify(token, config.jwt_access_secret as string, (err, decoded) => {
-            if (err) {
-                throw new AppError(httpStatus.UNAUTHORIZED, "Invalid token!");
-            }
+        try {
+            const decoded = jwt.verify(token, config.jwt_access_secret as string) as JwtPayload;
 
-            // Extract role from decoded token
-            const role = (decoded as JwtPayload).role;
-
+            const role = decoded.role as TUserRole;
             if (requiredRoles.length && !requiredRoles.includes(role)) {
                 throw new AppError(httpStatus.FORBIDDEN, "Insufficient permissions!");
             }
-
-            // Attach decoded token to request object
-            req.user = decoded as JwtPayload;
+            req.user = decoded;
             next();
-        });
+
+        } catch (error) {
+            throw new AppError(httpStatus.UNAUTHORIZED, "Invalid or expired token!");
+        }
     });
-}
+};
 
 export default auth;
