@@ -14,7 +14,7 @@ router.get(
 );
 
 router.put(
-  '/me/:userId',
+  '/me',
   auth(USER_ROLE.admin, USER_ROLE.user),
   validateRequest(UserValidation.updateUserValidationSchema),
   UserControllers.updateProfile,
